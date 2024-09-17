@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Resume Builder</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Quill CSS for Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .resume-content {
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .resume-content .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+        }
+
+        .resume-content header {
+            display: flex;
+            align-items: center;
+            /* Vertically align items in the header */
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .resume-content .header-info {
+            flex: 1;
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        .resume-content .header-info h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .resume-content .header-info p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .resume-content .contact-info ul {
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            list-style: none;
+        }
+
+        .resume-content .contact-info ul li {
+            margin-bottom: 0.3rem;
+        }
+
+        .resume-content .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .resume-content .photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            /* Add margin when photo is centered */
+        }
+
+        .resume-content .photo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .resume-content .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .resume-content h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+
+        .resume-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resume-content ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-content .job-title,
+        .resume-content .degree,
+        .resume-content .certification-title,
+        .resume-content .award-title,
+        .resume-content .project-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .resume-content .date {
+            font-style: italic;
+            color: #777;
+        }
+
+        .resume-content .job-description,
+        .resume-content .education-description,
+        .resume-content .certification-description,
+        .resume-content .award-description,
+        .resume-content .project-description {
+            margin-top: 0.5rem;
+        }
+
+        .resume-content .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .resume-content .flex-item {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .resume-content .flex-item:last-child {
+            margin-right: 0;
+        }
+
+        /* Cursor change for Section Order items */
+        #sectionOrder li {
+            cursor: move;
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+            }
+
+            .resume-content .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .resume-content .photo {
+                position: absolute;
+                top: 10mm;
+                right: 10mm;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .resume-content header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resume-content .photo {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+
+            .resume-content .flex-container {
+                flex-direction: column;
+            }
+
+            .resume-content .flex-item {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Hide custom font input by default */
+        .custom-font-input {
+            display: none;
+        }
+
+        /* Styling for font settings group box */
+        .font-settings-group {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* Add these styles for better UI */
+        .resume-input-section,
+        .resume-preview-section {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .resume-input-section h2,
+        .resume-preview-section h2 {
+            font-size: 1.5rem;
+            /* Normal font size for headings */
+        }
+
+        .resume-input-section label,
+        .resume-input-section .btn,
+        .resume-input-section h2,
+        .resume-input-section h3 {
+            font-size: 1rem;
+            /* Normal font size for input labels, buttons, etc. */
+        }
+
+        /* Styles for drag-and-drop visual cues (optional) */
+        #sectionOrder .list-group-item.dragging {
+            opacity: 0.5;
+        }
+
+        #sectionOrder .list-group-item.dropzone {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Resume Input Section -->
+            <div class="col-md-6 resume-input-section">
+                <h2 class="mb-4">Resume Input</h2>
+
+                <ul class="nav nav-tabs" id="resumeTabs" role="tablist">
+                    <!-- Tab Navigation -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic"
+                            type="button" role="tab" aria-controls="basic" aria-selected="true">Basic Info</button>
+                    </li>
+                    <!-- Summary Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary"
+                            type="button" role="tab" aria-controls="summary" aria-selected="false">Summary</button>
+                    </li>
+                    <!-- Skills Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills"
+                            type="button" role="tab" aria-controls="skills" aria-selected="false">Skills</button>
+                    </li>
+                    <!-- Experience Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="experience-tab" data-bs-toggle="tab" data-bs-target="#experience"
+                            type="button" role="tab" aria-controls="experience" aria-selected="false">Experience</button>
+                    </li>
+                    <!-- Education Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education"
+                            type="button" role="tab" aria-controls="education" aria-selected="false">Education</button>
+                    </li>
+                    <!-- Certifications Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="certifications-tab" data-bs-toggle="tab"
+                            data-bs-target="#certifications" type="button" role="tab" aria-controls="certifications"
+                            aria-selected="false">Certifications</button>
+                    </li>
+                    <!-- Awards Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="awards-tab" data-bs-toggle="tab" data-bs-target="#awards"
+                            type="button" role="tab" aria-controls="awards" aria-selected="false">Awards</button>
+                    </li>
+                    <!-- Projects Tab -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects"
+                            type="button" role="tab" aria-controls="projects" aria-selected="false">Projects</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="resumeTabContent">
+                    <!-- Basic Info Tab Content -->
+                    <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+                        <form id="resumeForm">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" required>
+                            </div>
+                            <!-- Basic Info Alignment -->
+                            <div class="mb-3">
+                                <label for="basicInfoAlignment" class="form-label">Basic Info Alignment</label>
+                                <select class="form-select" id="basicInfoAlignment">
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+                            <!-- Photo Alignment -->
+                            <div class="mb-3">
+                                <label for="photoAlignment" class="form-label">Photo Alignment</label>
+                                <select class="form-select" id="photoAlignment">
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+
+                            <!-- Font Settings Group for Name -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Name</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-name"
+                                        onchange="toggleCustomFontInput(this, 'name')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-name-custom"
+                                        placeholder="Enter custom font family" style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-name" placeholder="e.g., 24">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-name"
+                                        value="#000000">
+                                </div>
+                            </div>
+
+                            <!-- Font Settings Group for Title -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Title</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-title"
+                                        onchange="toggleCustomFontInput(this, 'title')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-title-custom"
+                                        placeholder="Enter custom font family" style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-title" placeholder="e.g., 18">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-title"
+                                        value="#000000">
+                                </div>
+                            </div>
+
+                            <!-- Font Settings Group for Contact Info -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Contact Info</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-contact"
+                                        onchange="toggleCustomFontInput(this, 'contact')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-contact-custom"
+                                        placeholder="Enter custom font family" style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-contact" placeholder="e.g., 14">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-contact"
+                                        value="#000000">
+                                </div>
+                            </div>
+
+
+                            <!-- Include/Exclude Options -->
+                            <div class="mb-3">
+                                <label class="form-label">Contact Information</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="includeEmail" checked>
+                                    <label class="form-check-label" for="includeEmail">
+                                        Include Email
+                                    </label>
+                                </div>
+                                <input type="email" class="form-control mt-2" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="includePhone" checked>
+                                    <label class="form-check-label" for="includePhone">
+                                        Include Phone
+                                    </label>
+                                </div>
+                                <input type="tel" class="form-control mt-2" id="phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="includeLinkedIn"
+                                        checked>
+                                    <label class="form-check-label" for="includeLinkedIn">
+                                        Include LinkedIn
+                                    </label>
+                                </div>
+                                <input type="url" class="form-control mt-2" id="linkedin" required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="includeWebsite"
+                                        checked>
+                                    <label class="form-check-label" for="includeWebsite">
+                                        Include Website
+                                    </label>
+                                </div>
+                                <input type="url" class="form-control mt-2" id="website" required>
+                            </div>
+                            <!-- Include Option for Photo -->
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="includePhoto" checked>
+                                    <label class="form-check-label" for="includePhoto">
+                                        Include Photo
+                                    </label>
+                                </div>
+                                <input type="file" class="form-control mt-2" id="photo" accept="image/*" required>
+                            </div>
+                        </form>
+                        <!-- Custom Fields Section -->
+                        <div class="mb-3">
+                            <label class="form-label">Custom Fields</label>
+                            <div id="customFields"></div>
+                            <button type="button" class="btn btn-secondary mt-2" onclick="addCustomField()">Add
+                                Field</button>
+                        </div>
+                    </div>
+                    <!-- Summary Tab Content -->
+                    <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input section-toggle" type="checkbox" value="" id="showSummary"
+                                checked>
+                            <label class="form-check-label" for="showSummary">
+                                Show Summary Section
+                            </label>
+                        </div>
+                        <div id="summarySection" class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <h3 class="mt-4 me-2">Summary</h3>
+                                <input type="text" class="form-control w-50 section-title" data-section="summary"
+                                    placeholder="Section Title">
+                            </div>
+                            <!-- Font Settings for Section Title -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Title</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-title" data-section="summary"
+                                        onchange="toggleCustomFontInput(this, 'summary-title')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-title-custom"
+                                        data-section="summary" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-title" data-section="summary"
+                                        placeholder="e.g., 18">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-title"
+                                        data-section="summary" value="#000000">
+                                </div>
+                            </div>
+                            <!-- Font Settings for Section Content -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Content</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-content" data-section="summary"
+                                        onchange="toggleCustomFontInput(this, 'summary-content')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-content-custom"
+                                        data-section="summary" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-content" data-section="summary"
+                                        placeholder="e.g., 14">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-content"
+                                        data-section="summary" value="#000000">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="summaryEditor" class="form-label">Summary</label>
+                                <div id="summaryEditor" style="height: 150px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Skills Tab Content -->
+                    <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input section-toggle" type="checkbox" value="" id="showSkills"
+                                checked>
+                            <label class="form-check-label" for="showSkills">
+                                Show Skills Section
+                            </label>
+                        </div>
+                        <div id="skillsSection" class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <h3 class="mt-4 me-2">Skills</h3>
+                                <input type="text" class="form-control w-50 section-title" data-section="skills"
+                                    placeholder="Section Title">
+                            </div>
+                            <!-- Font Settings for Section Title -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Title</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-title" data-section="skills"
+                                        onchange="toggleCustomFontInput(this, 'skills-title')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-title-custom"
+                                        data-section="skills" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-title" data-section="skills"
+                                        placeholder="e.g., 18">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-title"
+                                        data-section="skills" value="#000000">
+                                </div>
+                            </div>
+                            <!-- Font Settings for Section Content -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Content</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-content" data-section="skills"
+                                        onchange="toggleCustomFontInput(this, 'skills-content')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-content-custom"
+                                        data-section="skills" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-content" data-section="skills"
+                                        placeholder="e.g., 14">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-content"
+                                        data-section="skills" value="#000000">
+                                </div>
+                            </div>
+                            <div id="skillsItems"></div>
+                            <button type="button" class="btn btn-secondary mb-3" onclick="addSkill()">Add Skill</button>
+                        </div>
+                    </div>
+                    <!-- Experience Tab Content -->
+                    <div class="tab-pane fade" id="experience" role="tabpanel" aria-labelledby="experience-tab">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input section-toggle" type="checkbox" value=""
+                                id="showExperience" checked>
+                            <label class="form-check-label" for="showExperience">
+                                Show Experience Section
+                            </label>
+                        </div>
+                        <div id="experienceSection" class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <h3 class="mt-4 me-2">Experience</h3>
+                                <input type="text" class="form-control w-50 section-title" data-section="experience"
+                                    placeholder="Section Title">
+                            </div>
+                            <!-- Font Settings for Section Title -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Title</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-title" data-section="experience"
+                                        onchange="toggleCustomFontInput(this, 'experience-title')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-title-custom"
+                                        data-section="experience" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-title" data-section="experience"
+                                        placeholder="e.g., 18">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-title"
+                                        data-section="experience" value="#000000">
+                                </div>
+                            </div>
+                            <!-- Font Settings for Section Content -->
+                            <div class="font-settings-group">
+                                <h3>Font Settings for Section Content</h3>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Family</label>
+                                    <select class="form-select font-family-content" data-section="experience"
+                                        onchange="toggleCustomFontInput(this, 'experience-content')">
+                                        <option value="">Default</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                        <option value="'Times New Roman'">Times New Roman</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Verdana">Verdana</option>
+                                        <option value="Helvetica">Helvetica</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text"
+                                        class="form-control mt-2 custom-font-input font-family-content-custom"
+                                        data-section="experience" placeholder="Enter custom font family"
+                                        style="display:none;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Size</label>
+                                    <input type="number" class="form-control font-size-content"
+                                        data-section="experience" placeholder="e.g., 14">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Font Color</label>
+                                    <input type="color" class="form-control form-control-color font-color-content"
+                                        data-section="experience" value="#000000">
+                                </div>
+                            </div>
+                            <div id="experienceItems"></div>
+                            <button type="button" class="btn btn-secondary mb-3" onclick="addExperience()">Add
+                                Experience</button>
+                        </div>
+                    </div>
+                    <!-- Education Tab Content -->
+                    <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input section-toggle" type="checkbox" value="" id="showEducation"
+                                checked>
+                            <label class="form-check-label" for="showEducation">
+                                Show Education Section
+                            </label>
+                        </div>
+                        <div id="educationSection" class="mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <h3 class="mt-4 me-2">Education</h3>
+                                <input type="text" class="form-control w-50 section-title" data-section="education"
+                                    placeholder="Section Title">
+                                </div>
+                                <!-- Font Settings for Section Title -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Title</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-title" data-section="education"
+                                            onchange="toggleCustomFontInput(this, 'education-title')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text" class="form-control mt-2 custom-font-input font-family-title-custom"
+                                            data-section="education" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-title" data-section="education"
+                                            placeholder="e.g., 18">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-title"
+                                            data-section="education" value="#000000">
+                                    </div>
+                                </div>
+                                <!-- Font Settings for Section Content -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Content</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-content" data-section="education"
+                                            onchange="toggleCustomFontInput(this, 'education-content')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-content-custom"
+                                            data-section="education" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-content" data-section="education"
+                                            placeholder="e.g., 14">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-content"
+                                            data-section="education" value="#000000">
+                                    </div>
+                                </div>
+                                <div id="educationItems"></div>
+                                <button type="button" class="btn btn-secondary mb-3" onclick="addEducation()">Add
+                                    Education</button>
+                            </div>
+                        </div>
+                        <!-- Certifications Tab Content -->
+                        <div class="tab-pane fade" id="certifications" role="tabpanel"
+                            aria-labelledby="certifications-tab">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input section-toggle" type="checkbox" value=""
+                                    id="showCertifications" checked>
+                                <label class="form-check-label" for="showCertifications">
+                                    Show Certifications Section
+                                </label>
+                            </div>
+                            <div id="certificationsSection" class="mb-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h3 class="mt-4 me-2">Certifications</h3>
+                                    <input type="text" class="form-control w-50 section-title"
+                                        data-section="certifications" placeholder="Section Title">
+                                </div>
+                                <!-- Font Settings for Section Title -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Title</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-title" data-section="certifications"
+                                            onchange="toggleCustomFontInput(this, 'certifications-title')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-title-custom"
+                                            data-section="certifications" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-title"
+                                            data-section="certifications" placeholder="e.g., 18">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-title"
+                                            data-section="certifications" value="#000000">
+                                    </div>
+                                </div>
+                                <!-- Font Settings for Section Content -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Content</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-content" data-section="certifications"
+                                            onchange="toggleCustomFontInput(this, 'certifications-content')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-content-custom"
+                                            data-section="certifications" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-content"
+                                            data-section="certifications" placeholder="e.g., 14">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-content"
+                                            data-section="certifications" value="#000000">
+                                    </div>
+                                </div>
+                                <div id="certificationItems"></div>
+                                <button type="button" class="btn btn-secondary mb-3" onclick="addCertification()">Add
+                                    Certification</button>
+                            </div>
+                        </div>
+                        <!-- Awards Tab Content -->
+                        <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input section-toggle" type="checkbox" value="" id="showAwards"
+                                    checked>
+                                <label class="form-check-label" for="showAwards">
+                                    Show Awards Section
+                                </label>
+                            </div>
+                            <div id="awardsSection" class="mb-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h3 class="mt-4 me-2">Awards</h3>
+                                    <input type="text" class="form-control w-50 section-title" data-section="awards"
+                                        placeholder="Section Title">
+                                </div>
+                                <!-- Font Settings for Section Title -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Title</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-title" data-section="awards"
+                                            onchange="toggleCustomFontInput(this, 'awards-title')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-title-custom"
+                                            data-section="awards" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-title" data-section="awards"
+                                            placeholder="e.g., 18">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-title"
+                                            data-section="awards" value="#000000">
+                                    </div>
+                                </div>
+                                <!-- Font Settings for Section Content -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Content</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-content" data-section="awards"
+                                            onchange="toggleCustomFontInput(this, 'awards-content')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-content-custom"
+                                            data-section="awards" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-content" data-section="awards"
+                                            placeholder="e.g., 14">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-content"
+                                            data-section="awards" value="#000000">
+                                    </div>
+                                </div>
+                                <div id="awardItems"></div>
+                                <button type="button" class="btn btn-secondary mb-3" onclick="addAward()">Add Award</button>
+                            </div>
+                        </div>
+                        <!-- Projects Tab Content -->
+                        <div class="tab-pane fade" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input section-toggle" type="checkbox" value="" id="showProjects"
+                                    checked>
+                                <label class="form-check-label" for="showProjects">
+                                    Show Projects Section
+                                </label>
+                            </div>
+                            <div id="projectsSection" class="mb-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h3 class="mt-4 me-2">Projects</h3>
+                                    <input type="text" class="form-control w-50 section-title" data-section="projects"
+                                        placeholder="Section Title">
+                                </div>
+                                <!-- Font Settings for Section Title -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Title</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-title" data-section="projects"
+                                            onchange="toggleCustomFontInput(this, 'projects-title')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-title-custom"
+                                            data-section="projects" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-title" data-section="projects"
+                                            placeholder="e.g., 18">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-title"
+                                            data-section="projects" value="#000000">
+                                    </div>
+                                </div>
+                                <!-- Font Settings for Section Content -->
+                                <div class="font-settings-group">
+                                    <h3>Font Settings for Section Content</h3>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Family</label>
+                                        <select class="form-select font-family-content" data-section="projects"
+                                            onchange="toggleCustomFontInput(this, 'projects-content')">
+                                            <option value="">Default</option>
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="'Times New Roman'">Times New Roman</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <input type="text"
+                                            class="form-control mt-2 custom-font-input font-family-content-custom"
+                                            data-section="projects" placeholder="Enter custom font family"
+                                            style="display:none;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Size</label>
+                                        <input type="number" class="form-control font-size-content" data-section="projects"
+                                            placeholder="e.g., 14">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Font Color</label>
+                                        <input type="color" class="form-control form-control-color font-color-content"
+                                            data-section="projects" value="#000000">
+                                    </div>
+                                </div>
+                                <div id="projectItems"></div>
+                                <button type="button" class="btn btn-secondary mb-3" onclick="addProject()">Add
+                                    Project</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Resume Preview Section -->
+                <div class="col-md-6 resume-preview-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Resume Preview</h2>
+                        <button onclick="exportHtml()" class="btn btn-secondary">Export as HTML</button>
+                    </div>
+                    <div id="resumePreview" class="resume-content border p-3" style="height: 600px; overflow-y: auto;">
+                    </div>
+    
+                    <!-- Section Order Interface -->
+                    <div class="mt-3 mb-4">
+                        <h3>Section Order</h3>
+                        <ul id="sectionOrder" class="list-group">
+                            <li class="list-group-item" data-section-id="summary">Summary</li>
+                            <li class="list-group-item" data-section-id="skills">Skills</li>
+                            <li class="list-group-item" data-section-id="experience">Experience</li>
+                            <li class="list-group-item" data-section-id="education">Education</li>
+                            <li class="list-group-item" data-section-id="certifications">Certifications</li>
+                            <li class="list-group-item" data-section-id="awards">Awards</li>
+                            <li class="list-group-item" data-section-id="projects">Projects</li>
+                        </ul>
+                        <small class="text-muted">Drag and drop to reorder sections</small>
+                    </div>
+    
+                    <!-- Section Header Underline Color -->
+                    <div class="mb-3">
+                        <label class="form-label">Section Header Underline Color</label>
+                        <div id="sectionHeaderUnderlineColors"></div>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="addSectionUnderlineColor()">Add
+                            Color</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Include External Libraries -->
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Quill JS for Rich Text Editor -->
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <!-- SortableJS for Drag-and-Drop -->
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+        <!-- Custom JavaScript -->
+        <script>
+            // Input Sanitization Function
+            function escapeHTML(str) {
+                if (!str) return '';
+                return str.replace(/[&<>'"]/g, function (char) {
+                    return ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    })[char];
+                });
+            }
+    
+            // Initialize Quill Editors
+            var quillSummary = new Quill('#summaryEditor', { theme: 'snow' });
+    
+            // Initialize other Quill editors dynamically
+            function initializeQuillEditors() {
+                document.querySelectorAll('.quill-editor').forEach(function (editor) {
+                    if (!editor.classList.contains('ql-container')) {
+                        new Quill(editor, { theme: 'snow' });
+                    }
+                });
+            }
+    
+            // Function to Add Custom Field to Basic Info
+            function addCustomField() {
+                const customFieldsContainer = document.getElementById('customFields');
+                const customFieldDiv = document.createElement('div');
+                customFieldDiv.className = 'mb-2';
+                customFieldDiv.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control me-2 custom-field-label" placeholder="Label" required>
+                            <input type="text" class="form-control me-2 custom-field-value" placeholder="Value" required>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                customFieldsContainer.appendChild(customFieldDiv);
+                updatePreview();
+            }
+    
+            // Functions to Add Items to Each Section
+            function addSkill() {
+                const skillsItems = document.getElementById('skillsItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'd-flex align-items-center mb-2';
+                newItem.innerHTML = `
+                        <input type="text" class="form-control me-2 skill-item" placeholder="Skill">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove(); updatePreview();">Remove</button>
+                    `;
+                skillsItems.appendChild(newItem);
+                updatePreview();
+            }
+    
+            function addExperience() {
+                const experienceItems = document.getElementById('experienceItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'card mb-3';
+                newItem.innerHTML = `
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Job Title</label>
+                                <input type="text" class="form-control experience-title" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Company</label>
+                                <input type="text" class="form-control experience-company" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control experience-location" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control experience-date" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Description</label>
+                                <div class="quill-editor experience-description" style="height: 100px;"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                experienceItems.appendChild(newItem);
+                initializeQuillEditors();
+                updatePreview();
+            }
+    
+            function addEducation() {
+                const educationItems = document.getElementById('educationItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'card mb-3';
+                newItem.innerHTML = `
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Degree</label>
+                                <input type="text" class="form-control education-degree" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Institution</label>
+                                <input type="text" class="form-control education-institution" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control education-location" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control education-date" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Description</label>
+                                <div class="quill-editor education-description" style="height: 100px;"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                educationItems.appendChild(newItem);
+                initializeQuillEditors();
+                updatePreview();
+            }
+    
+            function addCertification() {
+                const certificationItems = document.getElementById('certificationItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'card mb-3';
+                newItem.innerHTML = `
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Certification Title</label>
+                                <input type="text" class="form-control certification-title" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Institution</label>
+                                <input type="text" class="form-control certification-institution" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control certification-date" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Description</label>
+                                <div class="quill-editor certification-description" style="height: 100px;"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                certificationItems.appendChild(newItem);
+                initializeQuillEditors();
+                updatePreview();
+            }
+    
+            function addAward() {
+                const awardItems = document.getElementById('awardItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'card mb-3';
+                newItem.innerHTML = `
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Award Title</label>
+                                <input type="text" class="form-control award-title" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Institution</label>
+                                <input type="text" class="form-control award-institution" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control award-date" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Description</label>
+                                <div class="quill-editor award-description" style="height: 100px;"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                awardItems.appendChild(newItem);
+                initializeQuillEditors();
+                updatePreview();
+            }
+    
+            function addProject() {
+                const projectItems = document.getElementById('projectItems');
+                const newItem = document.createElement('div');
+                newItem.className = 'card mb-3';
+                newItem.innerHTML = `
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Project Title</label>
+                                <input type="text" class="form-control project-title" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control project-date" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Description</label>
+                                <div class="quill-editor project-description" style="height: 100px;"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); updatePreview();">Remove</button>
+                        </div>
+                    `;
+                projectItems.appendChild(newItem);
+                initializeQuillEditors();
+                updatePreview();
+            }
+    
+            // Toggle Custom Font Input Visibility
+            function toggleCustomFontInput(selectElement, sectionKey) {
+                const selectedValue = selectElement.value;
+                const customInput = selectElement.parentElement.querySelector('.custom-font-input');
+                if (selectedValue === 'Other') {
+                    customInput.style.display = 'block';
+                } else {
+                    customInput.style.display = 'none';
+                    customInput.value = '';
+                }
+                updatePreview();
+            }
+    
+            // Add Section Underline Color
+            function addSectionUnderlineColor() {
+                const colorsContainer = document.getElementById('sectionHeaderUnderlineColors');
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'mb-2 d-flex align-items-center';
+                colorDiv.innerHTML = `
+                        <input type="color" class="form-control form-control-color section-header-underline-color" value="#007bff">
+                        <label class="form-label ms-2">For:</label>
+                        <select class="form-select ms-2 section-header-underline-select">
+                            <option value="summary">Summary</option>
+                            <option value="skills">Skills</option>
+                            <option value="experience">Experience</option>
+                            <option value="education">Education</option>
+                            <option value="certifications">Certifications</option>
+                            <option value="awards">Awards</option>
+                            <option value="projects">Projects</option>
+                        </select>
+                        <button type="button" class="btn btn-danger btn-sm ms-2" onclick="this.parentElement.remove(); updatePreview();">Remove</button>
+                    `;
+                colorsContainer.appendChild(colorDiv);
+                updatePreview();
+            }
+    
+            // Initialize Drag-and-Drop Reordering of Sections
+            function initializeSectionOrdering() {
+                const sectionOrderList = document.getElementById('sectionOrder');
+                Sortable.create(sectionOrderList, {
+                    animation: 150,
+                    ghostClass: 'dragging', // Optional: Add visual cue for dragging
+                    chosenClass: 'dropzone', // Optional: Add visual cue for dropzone
+                    onEnd: updatePreview
+                });
+            }
+    
+            // Initialize Drag-and-Drop Reordering of Items Within Sections
+            function initializeSortableSections() {
+                ['skillsItems', 'experienceItems', 'educationItems', 'certificationItems', 'awardItems', 'projectItems'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        Sortable.create(el, {
+                            animation: 150,
+                            ghostClass: 'dragging', // Optional: Add visual cue for dragging
+                            chosenClass: 'dropzone', // Optional: Add visual cue for dropzone
+                            onEnd: updatePreview
+                        });
+                    }
+                });
+            }
+    
+            // Update Preview Function 
+            function updatePreview() {
+                const fullName = escapeHTML(document.getElementById('fullName').value);
+                const title = escapeHTML(document.getElementById('title').value);
+    
+                // Get Font Settings for Name
+                let fontFamilyName = document.querySelector('.font-family-name').value;
+                if (fontFamilyName === 'Other') {
+                    fontFamilyName = document.querySelector('.font-family-name-custom').value;
+                }
+                const fontSizeName = document.querySelector('.font-size-name').value;
+                const fontColorName = document.querySelector('.font-color-name').value;
+    
+                // Get Font Settings for Title
+                let fontFamilyTitle = document.querySelector('.font-family-title').value;
+                if (fontFamilyTitle === 'Other') {
+                    fontFamilyTitle = document.querySelector('.font-family-title-custom').value;
+                }
+                const fontSizeTitle = document.querySelector('.font-size-title').value;
+                const fontColorTitle = document.querySelector('.font-color-title').value;
+    
+                // Get Font Settings for Contact Info
+                let fontFamilyContact = document.querySelector('.font-family-contact').value;
+                if (fontFamilyContact === 'Other') {
+                    fontFamilyContact = document.querySelector('.font-family-contact-custom').value;
+                }
+                const fontSizeContact = document.querySelector('.font-size-contact').value;
+                const fontColorContact = document.querySelector('.font-color-contact').value;
+    
+                const nameStyle = `style="${fontFamilyName ? 'font-family:' + fontFamilyName + ';' : ''}${fontSizeName ? 'font-size:' + fontSizeName + 'px;' : ''}${fontColorName ? 'color:' + fontColorName + ';' : ''}"`;
+                const titleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                const contactStyle = `style="${fontFamilyContact ? 'font-family:' + fontFamilyContact + ';' : ''}${fontSizeContact ? 'font-size:' + fontSizeContact + 'px;' : ''}${fontColorContact ? 'color:' + fontColorContact + ';' : ''}"`;
+
+                // Get Alignment Settings
+                const basicInfoAlignment = document.getElementById('basicInfoAlignment').value;
+                const photoAlignment = document.getElementById('photoAlignment').value;
+
+                // Check if fields are included
+                const includeEmail = document.getElementById('includeEmail').checked;
+                const includePhone = document.getElementById('includePhone').checked;
+                const includeLinkedIn = document.getElementById('includeLinkedIn').checked;
+                const includeWebsite = document.getElementById('includeWebsite').checked;
+                const includePhoto = document.getElementById('includePhoto').checked;
+
+                const email = escapeHTML(document.getElementById('email').value);
+                const phone = escapeHTML(document.getElementById('phone').value);
+                const linkedin = escapeHTML(document.getElementById('linkedin').value);
+                const website = escapeHTML(document.getElementById('website').value);
+
+                // Handle Photo Upload
+                const photoInput = document.getElementById('photo');
+                let photoURL = '';
+                if (includePhoto && photoInput.files && photoInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        photoURL = e.target.result;
+                        renderPreview();
+                    }
+                    reader.readAsDataURL(photoInput.files[0]);
+                } else {
+                    renderPreview();
+                }
+
+                function renderPreview() {
+                    // Build Contact Info Section
+                    let contactInfoHTML = `<section class="contact-info" ${contactStyle}><ul>`;
+                    if (includeEmail && email) {
+                        contactInfoHTML += `<li>Email: <a href="mailto:${email}">${email}</a></li>`;
+                    }
+                    if (includePhone && phone) {
+                        contactInfoHTML += `<li>Phone: ${phone}</li>`;
+                    }
+                    if (includeLinkedIn && linkedin) {
+                        contactInfoHTML += `<li>LinkedIn: <a href="${linkedin}" target="_blank">${linkedin.split('/').pop()}</a></li>`;
+                    }
+                    if (includeWebsite && website) {
+                        contactInfoHTML += `<li>Website: <a href="${website}" target="_blank">${website}</a></li>`;
+                    }
+                    // Add Custom Fields
+                    document.querySelectorAll('.custom-field-label').forEach((labelInput, index) => {
+                        const valueInput = document.querySelectorAll('.custom-field-value')[index];
+                        const label = escapeHTML(labelInput.value);
+                        const value = escapeHTML(valueInput.value);
+                        if (label && value) {
+                            contactInfoHTML += `<li>${label}: ${value}</li>`;
+                        }
+                    });
+                    contactInfoHTML += '</ul></section>';
+
+                    // Build Summary Section with Styles
+                    let summaryHTML = '';
+                    if (document.getElementById('showSummary').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="summary"]').value) || 'Summary';
+                        const summaryContent = quillSummary.root.innerHTML;
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="summary"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="summary"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="summary"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="summary"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="summary"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="summary"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="summary"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="summary"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        summaryHTML = `
+                                    <section class="summary section" data-section-id="summary">
+                                        <h2 ${sectionTitleStyle} class="section-header" data-section="summary">${sectionTitle}</h2>
+                                        <div ${sectionContentStyle}>${summaryContent}</div>
+                                    </section>
+                                `;
+                    }
+
+                    // Build Skills Section with Styles
+                    let skillsHTML = '';
+                    if (document.getElementById('showSkills').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="skills"]').value) || 'Skills';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="skills"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="skills"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="skills"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="skills"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="skills"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="skills"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="skills"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="skills"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        skillsHTML = `<section class="skills section" data-section-id="skills">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="skills">${sectionTitle}</h2>
+                                    <ul ${sectionContentStyle}>`;
+                        document.querySelectorAll('.skill-item').forEach(skill => {
+                            const skillValue = escapeHTML(skill.value);
+                            if (skillValue.trim() !== '') {
+                                skillsHTML += `<li>${skillValue}</li>`;
+                            }
+                        });
+                        skillsHTML += '</ul></section>';
+                    }
+
+                    // Build Experience Section with Styles
+                    let experienceHTML = '';
+                    if (document.getElementById('showExperience').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="experience"]').value) || 'Experience';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="experience"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="experience"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="experience"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="experience"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="experience"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="experience"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="experience"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="experience"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        experienceHTML = `<section class="experience section" data-section-id="experience">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="experience">${sectionTitle}</h2>`;
+                        document.querySelectorAll('#experienceItems .card').forEach(exp => {
+                            const jobTitle = escapeHTML(exp.querySelector('.experience-title').value);
+                            const company = escapeHTML(exp.querySelector('.experience-company').value);
+                            const location = escapeHTML(exp.querySelector('.experience-location').value);
+                            const date = escapeHTML(exp.querySelector('.experience-date').value);
+                            const description = exp.querySelector('.experience-description .ql-editor').innerHTML;
+                            experienceHTML += `
+                                    <div class="job" ${sectionContentStyle}>
+                                        <div class="flex-container">
+                                            <div class="flex-item">
+                                                <h3 class="job-title">${jobTitle}</h3>
+                                                <p class="date">${date}</p>
+                                                <p>${company} - ${location}</p>
+                                            </div>
+                                            <div class="flex-item">
+                                                <div class="job-description">${description}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                        });
+                        experienceHTML += '</section>';
+                    }
+
+                    // Build Education Section with Styles
+                    let educationHTML = '';
+                    if (document.getElementById('showEducation').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="education"]').value) || 'Education';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="education"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="education"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="education"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="education"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="education"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="education"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="education"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="education"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        educationHTML = `<section class="education section" data-section-id="education">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="education">${sectionTitle}</h2>`;
+                        document.querySelectorAll('#educationItems .card').forEach(edu => {
+                            const degree = escapeHTML(edu.querySelector('.education-degree').value);
+                            const institution = escapeHTML(edu.querySelector('.education-institution').value);
+                            const location = escapeHTML(edu.querySelector('.education-location').value);
+                            const date = escapeHTML(edu.querySelector('.education-date').value);
+                            const description = edu.querySelector('.education-description .ql-editor').innerHTML;
+                            educationHTML += `
+                                    <div class="education-item" ${sectionContentStyle}>
+                                        <div class="flex-container">
+                                            <div class="flex-item">
+                                                <h3 class="degree">${degree}</h3>
+                                                <p class="date">${date}</p>
+                                                <p>${institution} - ${location}</p>
+                                            </div>
+                                            <div class="flex-item">
+                                                <div class="education-description">${description}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                        });
+                        educationHTML += '</section>';
+                    }
+
+                    // Build Certifications Section with Styles
+                    let certificationsHTML = '';
+                    if (document.getElementById('showCertifications').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="certifications"]').value) || 'Certifications';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="certifications"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="certifications"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="certifications"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="certifications"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="certifications"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="certifications"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="certifications"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="certifications"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        certificationsHTML = `<section class="certifications section" data-section-id="certifications">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="certifications">${sectionTitle}</h2>`;
+                        document.querySelectorAll('#certificationItems .card').forEach(cert => {
+                            const title = escapeHTML(cert.querySelector('.certification-title').value);
+                            const institution = escapeHTML(cert.querySelector('.certification-institution').value);
+                            const date = escapeHTML(cert.querySelector('.certification-date').value);
+                            const description = cert.querySelector('.certification-description .ql-editor').innerHTML;
+                            certificationsHTML += `
+                                    <div class="certification-item" ${sectionContentStyle}>
+                                        <h3 class="certification-title">${title}</h3>
+                                        <p class="date">${date}</p>
+                                        <p>${institution}</p>
+                                        <div class="certification-description">${description}</div>
+                                    </div>
+                                `;
+                        });
+                        certificationsHTML += '</section>';
+                    }
+
+                    // Build Awards Section with Styles
+                    let awardsHTML = '';
+                    if (document.getElementById('showAwards').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="awards"]').value) || 'Awards';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="awards"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="awards"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="awards"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="awards"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="awards"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="awards"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="awards"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="awards"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        awardsHTML = `<section class="awards section" data-section-id="awards">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="awards">${sectionTitle}</h2>`;
+                        document.querySelectorAll('#awardItems .card').forEach(award => {
+                            const title = escapeHTML(award.querySelector('.award-title').value);
+                            const institution = escapeHTML(award.querySelector('.award-institution').value);
+                            const date = escapeHTML(award.querySelector('.award-date').value);
+                            const description = award.querySelector('.award-description .ql-editor').innerHTML;
+                            awardsHTML += `
+                                    <div class="award-item" ${sectionContentStyle}>
+                                        <h3 class="award-title">${title}</h3>
+                                        <p class="date">${date}</p>
+                                        <p>${institution}</p>
+                                        <div class="award-description">${description}</div>
+                                    </div>
+                                `;
+                        });
+                        awardsHTML += '</section>';
+                    }
+
+                    // Build Projects Section with Styles
+                    let projectsHTML = '';
+                    if (document.getElementById('showProjects').checked) {
+                        let sectionTitle = escapeHTML(document.querySelector('.section-title[data-section="projects"]').value) || 'Projects';
+
+                        // Get Font Settings for Section Title
+                        let fontFamilyTitle = document.querySelector('.font-family-title[data-section="projects"]').value;
+                        if (fontFamilyTitle === 'Other') {
+                            fontFamilyTitle = document.querySelector('.font-family-title-custom[data-section="projects"]').value;
+                        }
+                        const fontSizeTitle = document.querySelector('.font-size-title[data-section="projects"]').value;
+                        const fontColorTitle = document.querySelector('.font-color-title[data-section="projects"]').value;
+
+                        // Get Font Settings for Section Content
+                        let fontFamilyContent = document.querySelector('.font-family-content[data-section="projects"]').value;
+                        if (fontFamilyContent === 'Other') {
+                            fontFamilyContent = document.querySelector('.font-family-content-custom[data-section="projects"]').value;
+                        }
+                        const fontSizeContent = document.querySelector('.font-size-content[data-section="projects"]').value;
+                        const fontColorContent = document.querySelector('.font-color-content[data-section="projects"]').value;
+
+                        const sectionTitleStyle = `style="${fontFamilyTitle ? 'font-family:' + fontFamilyTitle + ';' : ''}${fontSizeTitle ? 'font-size:' + fontSizeTitle + 'px;' : ''}${fontColorTitle ? 'color:' + fontColorTitle + ';' : ''}"`;
+                        const sectionContentStyle = `style="${fontFamilyContent ? 'font-family:' + fontFamilyContent + ';' : ''}${fontSizeContent ? 'font-size:' + fontSizeContent + 'px;' : ''}${fontColorContent ? 'color:' + fontColorContent + ';' : ''}"`;
+
+                        projectsHTML = `<section class="projects section" data-section-id="projects">
+                                    <h2 ${sectionTitleStyle} class="section-header" data-section="projects">${sectionTitle}</h2>`;
+                        document.querySelectorAll('#projectItems .card').forEach(proj => {
+                            const title = escapeHTML(proj.querySelector('.project-title').value);
+                            const date = escapeHTML(proj.querySelector('.project-date').value);
+                            const description = proj.querySelector('.project-description .ql-editor').innerHTML;
+                            projectsHTML += `
+                                    <div class="project-item" ${sectionContentStyle}>
+                                        <h3 class="project-title">${title}</h3>
+                                        <p class="date">${date}</p>
+                                        <div class="project-description">${description}</div>
+                                    </div>
+                                `;
+                        });
+                        projectsHTML += '</section>';
+                    }
+
+                    // Collect all sections for ordering
+                    const sections = {
+                        summary: summaryHTML,
+                        skills: skillsHTML,
+                        experience: experienceHTML,
+                        education: educationHTML,
+                        certifications: certificationsHTML,
+                        awards: awardsHTML,
+                        projects: projectsHTML
+                    };
+
+                    // Build the sections in the order specified by the user
+                    let orderedSectionsHTML = '';
+                    document.querySelectorAll('#sectionOrder li').forEach(li => {
+                        const sectionId = li.getAttribute('data-section-id');
+                        orderedSectionsHTML += sections[sectionId] || '';
+                    });
+
+                    // Determine photo position based on alignment 
+                    let photoHTML = '';
+                    if (includePhoto && photoURL) {
+                        if (photoAlignment === 'center') {
+                            photoHTML = `<div class="photo" style="margin-bottom: 1rem;"><img src="${photoURL}" alt="${fullName}"></div>`;
+                        } else {
+                            photoHTML = `<div class="photo" style="order: ${photoAlignment === 'right' ? 2 : 0};"><img src="${photoURL}" alt="${fullName}"></div>`; // Remove margin-left: auto;
+                        }
+                    }
+
+                    // Header HTML (using flexbox)
+                    let headerHTML = `
+                        <header style="display: flex; flex-direction: ${photoAlignment === 'center' ? 'column' : 'row'}; align-items: center; justify-content: ${basicInfoAlignment === 'left' ? 'flex-start' : basicInfoAlignment === 'right' ? 'flex-end' : 'center'};"> 
+                            ${photoHTML}
+                            <div class="header-info" style="text-align: ${basicInfoAlignment};">
+                                <h1 ${nameStyle}>${fullName}</h1>
+                                <p ${titleStyle}>${title}</p>
+                                ${contactInfoHTML}
+                            </div>
+                        </header>
+                    `;
+
+                    // Combine header and sections into previewContent
+                    const previewContent = `
+                                <div class="container">
+                                    ${headerHTML} 
+                                    ${orderedSectionsHTML}
+                                </div>
+                            `;
+
+                    document.getElementById('resumePreview').innerHTML = previewContent;
+
+                    // Apply section header underline colors
+                    const sectionUnderlineColors = {};
+                    document.querySelectorAll('.section-header-underline-select').forEach((select, index) => {
+                        const section = select.value;
+                        const colorInput = document.querySelectorAll('.section-header-underline-color')[index];
+                        sectionUnderlineColors[section] = colorInput.value;
+                    });
+
+                    document.querySelectorAll('.resume-content h2').forEach(header => {
+                        const section = header.getAttribute('data-section');
+                        if (sectionUnderlineColors[section]) {
+                            header.style.borderBottomColor = sectionUnderlineColors[section];
+                        }
+                    });
+                }
+            }
+
+            // Export to HTML Function 
+            function exportHtml() {
+                updatePreview(); // Update preview before exporting
+
+                const element = document.getElementById('resumePreview');
+                const htmlContent = `
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                                <meta charset="UTF-8">
+                                <title>${escapeHTML(document.getElementById('fullName').value)}'s Resume</title>
+                                <style>
+                                    /* Include necessary CSS styles */
+                                    body {
+                                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                        background-color: #ffffff;
+                                        color: #333;
+                                        line-height: 1.6;
+                                        padding: 20px;
+                                    }
+            
+                                    .container {
+                                        max-width: 900px;
+                                        margin: 0 auto;
+                                        padding: 1.5rem;
+                                        background: #ffffff;
+                                        border-radius: 8px;
+                                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                    }
+            
+                                    header {
+                                        display: flex;
+                                        align-items: center;
+                                        margin-bottom: 1.5rem;
+                                        padding-bottom: 1rem;
+                                        border-bottom: 1px solid #ddd;
+                                    }
+            
+                                    .header-info h1 {
+                                        margin: 0;
+                                        font-size: 2rem;
+                                        color: #333;
+                                    }
+            
+                                    .header-info p {
+                                        margin: 0.5rem 0;
+                                        font-size: 1rem;
+                                        color: #555;
+                                    }
+            
+                                    .contact-info ul {
+                                        padding: 0;
+                                        margin: 0;
+                                        font-size: 0.9rem;
+                                        list-style: none;
+                                    }
+            
+                                    .contact-info ul li {
+                                        margin-bottom: 0.3rem;
+                                    }
+            
+                                    .contact-info a {
+                                        color: #007bff;
+                                        text-decoration: none;
+                                    }
+            
+                                    .photo {
+                                        width: 120px;
+                                        height: 120px;
+                                        border-radius: 50%;
+                                        overflow: hidden;
+                                        margin-bottom: 1rem;
+                                    }
+            
+                                    .photo img {
+                                        width: 100%;
+                                        height: auto;
+                                    }
+            
+                                    .section {
+                                        margin-bottom: 1.5rem;
+                                    }
+            
+                                    h2 {
+                                        border-bottom: 2px solid #007bff;
+                                        padding-bottom: 5px;
+                                        font-size: 1.5rem;
+                                        color: #007bff;
+                                        margin-bottom: 1rem;
+                                    }
+            
+                                    ul {
+                                        list-style: none;
+                                        padding: 0;
+                                    }
+            
+                                    ul li {
+                                        margin-bottom: 0.5rem;
+                                    }
+            
+                                    .job-title,
+                                    .degree,
+                                    .certification-title,
+                                    .award-title,
+                                    .project-title {
+                                        font-weight: 600;
+                                        font-size: 1.1rem;
+                                    }
+            
+                                    .date {
+                                        font-style: italic;
+                                        color: #777;
+                                    }
+            
+                                    .job-description,
+                                    .education-description,
+                                    .certification-description,
+                                    .award-description,
+                                    .project-description {
+                                        margin-top: 0.5rem;
+                                    }
+            
+                                    .flex-container {
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        justify-content: space-between;
+                                    }
+            
+                                    .flex-item {
+                                        flex: 1;
+                                        margin-right: 1rem;
+                                    }
+            
+                                    .flex-item:last-child {
+                                        margin-right: 0;
+                                    }
+            
+                                    @media (max-width: 768px) {
+                                        header {
+                                            flex-direction: column;
+                                            align-items: flex-start;
+                                        }
+            
+                                        .photo {
+                                            margin-left: 0;
+                                            margin-top: 1rem;
+                                        }
+            
+                                        .flex-container {
+                                            flex-direction: column;
+                                        }
+            
+                                        .flex-item {
+                                            margin-right: 0;
+                                            margin-bottom: 1rem;
+                                        }
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="resume-content">
+                                    ${element.innerHTML} 
+                                </div>
+                            </body>
+                            </html>
+                        `;
+
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${escapeHTML(document.getElementById('fullName').value.replace(' ', '_'))}_resume.html`;
+                a.click();
+            }
+
+            // Event Listeners and Initial Calls
+            document.getElementById('resumeTabContent').addEventListener('input', updatePreview);
+            document.getElementById('resumeTabContent').addEventListener('change', updatePreview);
+
+            // Event Listeners for Show/Hide Sections
+            document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                checkbox.addEventListener('change', updatePreview);
+            });
+
+            // Initialize Drag-and-Drop, Quill Editors, and Preview on Load
+            document.addEventListener('DOMContentLoaded', function () {
+                initializeQuillEditors();
+                initializeSectionOrdering();
+                initializeSortableSections();
+                updatePreview();
+                // Initial Section Underline Color
+                addSectionUnderlineColor();
+            });
+        </script>
+</body>
+
+</html>
